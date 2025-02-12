@@ -1,8 +1,11 @@
 package utils
 
 import (
+	"fmt"
 	"nto_cli/types"
 	"strings"
+
+	"github.com/fatih/structtag"
 )
 
 func SplitStructField(field string) *types.Field {
@@ -11,12 +14,27 @@ func SplitStructField(field string) *types.Field {
 	}
 
 	startBacktip := strings.Index(field, "`")
-	var metadata []string
+	endBacktip := -1
+	var metadata []types.Medatada
 	if startBacktip > -1 {
-		metadata = []string{field[startBacktip:]}
+		endBacktip = strings.Index(field[startBacktip + 1:], "`")
+		if endBacktip > -1 {
+			endBacktip += startBacktip + 1
+			meta := field[startBacktip + 1 : endBacktip]
+			tags, err := structtag.Parse(meta)
+			if err != nil {
+				panic(err)
+			}
+			uiTags, err := tags.Get("ui")
+			if err != nil {
+				panic(err)
+			}
+			fmt.Printf("%+v\n", uiTags.Options) 
+		}
 	} else {
 		startBacktip = len(field)
 	}
+
 
 	field = strings.TrimSpace(field[:startBacktip])
 

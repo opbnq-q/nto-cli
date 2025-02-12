@@ -9,7 +9,6 @@ import (
 
 
 func main() {
-	fmt.Print("struct name, path to file (including struct): ")
 	structName, path := input.Input()
 	file, err := os.Open(path)
 	if err != nil {

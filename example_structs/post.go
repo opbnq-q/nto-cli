@@ -1,5 +1,5 @@
 package structs
 
 type Post struct {
-	                    title string   `json sex`                      
+	                    title string   `ui:",hidden,asd"`                      
 }

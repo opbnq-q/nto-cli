@@ -3,5 +3,10 @@ package types
 type Field struct {
 	Name string
 	Type string
-	Medatada []string
+	Medatada []Medatada
+}
+
+type Medatada struct {
+	Name string
+	Values []string
 }
