@@ -3,16 +3,16 @@ package generation
 import (
 	"fmt"
 	"os"
+	"strings"
 )
 
 func GenerateService(structName, mkName string) {
-	serviceFile, err := os.Create(mkName + "/service.ts") 
+	serviceFile, err := os.Create(mkName + "/" + strings.ToLower(structName) + ".service.ts") 
 	if err != nil {
 		panic(err)
 	}
 	defer serviceFile.Close()
-	_, err = serviceFile.WriteString(fmt.Sprintf(`
-export class %sService {
+	_, err = serviceFile.WriteString(fmt.Sprintf(`export class %sService {
 	async read() {
 
 	}
