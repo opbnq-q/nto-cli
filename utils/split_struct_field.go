@@ -1,21 +1,20 @@
 package utils
 
 import (
-	"fmt"
-	"nto_cli/types"
+	"nto_cli/entities"
 	"strings"
 
 	"github.com/fatih/structtag"
 )
 
-func SplitStructField(field string) *types.Field {
+func SplitStructField(field string) *entities.Field {
 	if strings.Contains(field, "type") {
 		return nil
 	}
 
 	startBacktip := strings.Index(field, "`")
 	endBacktip := -1
-	var metadata []types.Medatada
+	var metadata []entities.Medatada
 	if startBacktip > -1 {
 		endBacktip = strings.Index(field[startBacktip + 1:], "`")
 		if endBacktip > -1 {
@@ -25,11 +24,17 @@ func SplitStructField(field string) *types.Field {
 			if err != nil {
 				panic(err)
 			}
-			uiTags, err := tags.Get("ui")
+			uiTag, err := tags.Get("ui")
 			if err != nil {
 				panic(err)
 			}
-			fmt.Printf("%+v\n", uiTags.Options) 
+			uiTags := append([]string{uiTag.Name}, uiTag.Options...)
+			for _, t := range uiTags {
+				analyzed := entities.NewMetadata(t)
+				if analyzed != nil {
+					metadata = append(metadata, *analyzed)
+				}
+			}
 		}
 	} else {
 		startBacktip = len(field)
@@ -48,7 +53,7 @@ func SplitStructField(field string) *types.Field {
 
 	dataType := strings.TrimSpace(data[1])
 
-	return &types.Field{
+	return &entities.Field{
 		Medatada: metadata,
 		Type: dataType,
 		Name: name,

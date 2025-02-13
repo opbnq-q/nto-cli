@@ -2,17 +2,17 @@ package utils
 
 import (
 	"bufio"
-	"nto_cli/types"
+	"nto_cli/entities"
 	"os"
 	"strings"
 )
 
-func GetStructFields(file *os.File, structName string) []types.Field {
+func GetStructFields(file *os.File, structName string) []entities.Field {
 	bracketsCount := 1
 
 	structFound := false
 
-	structFields := []types.Field{}
+	structFields := []entities.Field{}
 
 	scanner := bufio.NewScanner(file)
 	for i := 1; scanner.Scan() && bracketsCount > 0; i++ {

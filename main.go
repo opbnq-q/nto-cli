@@ -18,5 +18,5 @@ func main() {
 
 	structFields := utils.GetStructFields(file, structName)
 
-	fmt.Println(structFields)
+	fmt.Printf("%+v\n", structFields)
 }

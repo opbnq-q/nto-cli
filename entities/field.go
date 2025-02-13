@@ -1,4 +1,4 @@
-package types
+package entities
 
 type Field struct {
 	Name string
@@ -6,7 +6,3 @@ type Field struct {
 	Medatada []Medatada
 }
 
-type Medatada struct {
-	Name string
-	Values []string
-}
