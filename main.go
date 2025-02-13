@@ -1,12 +1,11 @@
 package main
 
 import (
-	"fmt"
 	input "nto_cli/cmd"
+	"nto_cli/generation"
 	"nto_cli/utils"
 	"os"
 )
-
 
 func main() {
 	structName, path := input.Input()
@@ -18,5 +17,5 @@ func main() {
 
 	structFields := utils.GetStructFields(file, structName)
 
-	fmt.Printf("%+v\n", structFields)
+	generation.Generate(structName, structFields)
 }
