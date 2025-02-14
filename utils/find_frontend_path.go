@@ -3,7 +3,6 @@ package utils
 import (
 	"errors"
 	"os"
-	"slices"
 	"strings"
 )
 
@@ -13,8 +12,8 @@ func FindFrontendPath() string {
 		panic(err)
 	}
 	dirs := strings.Split(currentPath, "\\")
-	if !slices.Contains(dirs, "frontend") {
-		panic(errors.New("Frontend dir doesn't exist"))
+	if dirs[len(dirs) - 2] + "/" + dirs[len(dirs) - 1] != "frontend/src" {
+		panic(errors.New("You're not in frontend/src"))
 	}
 	var path string
 	for i, dir := range dirs {

@@ -9,7 +9,7 @@ import (
 )
 
 func Generate(structName string, fields []entities.Field) {
-	mkPath := strings.ToLower(fmt.Sprintf("%s/frontend/%s", utils.FindFrontendPath() , structName))
+	mkPath := strings.ToLower(fmt.Sprintf("%s/frontend/src/%s", utils.FindFrontendPath() , structName))
 	if err := os.Mkdir(mkPath, 0755); err != nil {
 		panic(err)
 	}
