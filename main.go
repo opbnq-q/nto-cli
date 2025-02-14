@@ -17,6 +17,5 @@ func main() {
 
 	structFields := utils.GetStructFields(file, structName)
 
-		generation.Generate(structName, structFields)
-	}
-
+	generation.Generate(structName, structFields)
+}
