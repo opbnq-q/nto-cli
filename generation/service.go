@@ -2,12 +2,19 @@ package generation
 
 import (
 	"fmt"
+	"nto_cli/utils"
 	"os"
 	"strings"
 )
 
-func GenerateService(structName, mkName string) {
-	serviceFile, err := os.Create(mkName + "/" + strings.ToLower(structName) + ".service.ts") 
+func GetServiceBindPath(structName string) string {
+	path := utils.FindFrontendPath()
+	path += fmt.Sprintf("/bindings/app/internal/services/%sservice.ts", strings.ToLower(structName))
+	return path
+}
+
+func GenerateService(structName, mkPath string) {
+	serviceFile, err := os.Create(mkPath + "/" + strings.ToLower(structName) + ".service.ts") 
 	if err != nil {
 		panic(err)
 	}

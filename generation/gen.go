@@ -3,14 +3,15 @@ package generation
 import (
 	"fmt"
 	"nto_cli/entities"
+	"nto_cli/utils"
 	"os"
 	"strings"
 )
 
 func Generate(structName string, fields []entities.Field) {
-	mkName := strings.ToLower(fmt.Sprintf("./%s", structName))
-	if err := os.Mkdir(mkName, 0755); err != nil {
+	mkPath := strings.ToLower(fmt.Sprintf("%s/frontend/%s", utils.FindFrontendPath() , structName))
+	if err := os.Mkdir(mkPath, 0755); err != nil {
 		panic(err)
 	}
-	GenerateService(structName, mkName)
+	GenerateService(structName, mkPath)
 }
