@@ -1,6 +1,8 @@
 package entities
 
-import "strings"
+import (
+	"strings"
+)
 
 type Medatada struct {
 	Name   string

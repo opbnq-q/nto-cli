@@ -40,7 +40,6 @@ func SplitStructField(field string) *entities.Field {
 		startBacktip = len(field)
 	}
 
-
 	field = strings.TrimSpace(field[:startBacktip])
 
 	data := strings.Split(field, " ")
