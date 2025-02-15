@@ -27,12 +27,12 @@ func GenerateService(structName, mkPath string) {
 		panic(err)
 	}
 	defer serviceFile.Close()
-	_, err = serviceFile.WriteString(
-		fmt.Sprintf(`import { GetAll, Create, Delete, ExportToExcel, GetById, Update, Count } from "%s"
+	_, err = serviceFile.WriteString(fmt.Sprintf(
+`import { GetAll, Create, Delete, ExportToExcel, GetById, Update, Count } from "%s"
 import type { %s } from "%s"
-import type { Service } from "%s"
+import type { IService } from "%s"
 	
-export class %sService implements Service<%s> {
+export class %sService implements IService<%s> {
 	async read(id: number) {
 		return await GetById(id)
 	}
