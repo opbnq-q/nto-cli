@@ -2,24 +2,12 @@ package generation
 
 import (
 	"fmt"
+	"nto_cli/utils"
 	"os"
 	"strings"
 )
 
-func GetServiceBindPath(structName string) string {
-	path := fmt.Sprintf("../../bindings/app/internal/services/%sservice.ts", strings.ToLower(structName))
-	return path
-}
 
-func GetServiceStructType(structName string) string {
-	path := "../../bindings/app/internal/services/models.ts"
-	return path
-}
-
-func GetServiceType() string {
-	path := "../types/service.type.ts"
-	return path
-}
 
 func GenerateService(structName, mkPath string) {
 	serviceFile, err := os.Create(mkPath + "/" + strings.ToLower(structName) + ".service.ts")
@@ -28,11 +16,11 @@ func GenerateService(structName, mkPath string) {
 	}
 	defer serviceFile.Close()
 	_, err = serviceFile.WriteString(fmt.Sprintf(
-`import { GetAll, Create, Delete, ExportToExcel, GetById, Update, Count } from "%s"
+		`import { GetAll, Create, Delete, ExportToExcel, GetById, Update, Count } from "%s"
 import type { %s } from "%s"
 import type { IService } from "%s"
 	
-export class %sService implements IService<%s> {
+export default class %sService implements IService<%s> {
 	async read(id: number) {
 		return await GetById(id)
 	}
@@ -58,7 +46,7 @@ export class %sService implements IService<%s> {
 		return await ExportToExcel()
 	}
 }
-`, GetServiceBindPath(structName), structName, GetServiceStructType(structName), GetServiceType(), structName, structName, structName, structName, structName))
+`, utils.GetServiceBindPath(structName), structName, utils.GetServiceStructType(structName), utils.GetServiceType(), structName, structName, structName, structName, structName))
 	if err != nil {
 		panic(err)
 	}

@@ -14,4 +14,5 @@ func Generate(structName string, fields []entities.Field) {
 		panic(err)
 	}
 	GenerateService(structName, mkPath)
+	GenerateScheme(structName, fields, mkPath)
 }
