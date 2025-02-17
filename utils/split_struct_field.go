@@ -11,7 +11,6 @@ func SplitStructField(field string) *entities.Field {
 	if strings.Contains(field, "type") {
 		return nil
 	}
-
 	startBacktip := strings.Index(field, "`")
 	endBacktip := -1
 	var metadata []entities.Medatada
@@ -39,19 +38,16 @@ func SplitStructField(field string) *entities.Field {
 	} else {
 		startBacktip = len(field)
 	}
-
 	field = strings.TrimSpace(field[:startBacktip])
 
-	data := strings.Split(field, " ")
+	data := SplitBySingleSpace(field)
 
 	if len(data) < 2 {
         return nil
     }
 
-	name := strings.TrimSpace(data[0])
-
-	dataType := strings.TrimSpace(data[1])
-
+	name := data[0]
+	dataType := data[1]
 	return &entities.Field{
 		Medatada: metadata,
 		Type: dataType,

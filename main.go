@@ -16,6 +16,5 @@ func main() {
 	defer file.Close()
 
 	structFields := utils.GetStructFields(file, structName)
-
 	generation.Generate(structName, structFields)
 }
