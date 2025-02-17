@@ -1,9 +1,8 @@
 package main
 
 import (
-	"fmt"
 	input "nto_cli/cmd"
-	// "nto_cli/generation"
+	"nto_cli/generation"
 	"nto_cli/utils"
 	"os"
 )
@@ -17,9 +16,6 @@ func main() {
 	defer file.Close()
 
 	structFields := utils.GetStructFields(file, structName)
-	for _, field := range structFields {
-		fmt.Println(field.Generate())
-	}
 
-	// generation.Generate(structName, structFields)
+	generation.Generate(structName, structFields)
 }
