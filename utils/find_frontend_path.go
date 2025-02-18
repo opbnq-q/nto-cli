@@ -21,7 +21,7 @@ func FindFrontendPath() string {
         currentPath = filepath.Clean(dir)
     }
 
-    if len(dirs) < 2 || dirs[len(dirs)-2]+"/"+dirs[len(dirs)-1] != "frontend/src" {
+    if len(dirs) < 2 || dirs[len(dirs)-2] + "/" + dirs[len(dirs)-1] != "frontend/src" {
         panic(errors.New("You're not in frontend/src"))
     }
 

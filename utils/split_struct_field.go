@@ -1,15 +1,19 @@
 package utils
 
 import (
+	"errors"
 	"nto_cli/entities"
 	"strings"
 
 	"github.com/fatih/structtag"
 )
 
-func SplitStructField(field string) *entities.Field {
-	if strings.Contains(field, "type") {
-		return nil
+func SplitStructField(field string) (*entities.Field, error) {
+	if strings.Contains(field, "type")  {
+		return nil, nil
+	}
+	if len(strings.TrimSpace(field)) < 2 {
+		return nil, errors.New("End")
 	}
 	startBacktip := strings.Index(field, "`")
 	endBacktip := -1
@@ -42,9 +46,6 @@ func SplitStructField(field string) *entities.Field {
 
 	data := SplitBySingleSpace(field)
 
-	if len(data) < 2 {
-        return nil
-    }
 
 	name := data[0]
 	dataType := data[1]
@@ -52,5 +53,5 @@ func SplitStructField(field string) *entities.Field {
 		Medatada: metadata,
 		Type: dataType,
 		Name: name,
-	}
+	}, nil
 }

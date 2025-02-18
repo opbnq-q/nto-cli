@@ -24,7 +24,10 @@ func GetStructFields(file *os.File, structName string) []entities.Field {
 			bracketsCount += strings.Count(line, "{")
 			bracketsCount -= strings.Count(line, "}")
 			line = strings.TrimSpace(line)
-			newField := SplitStructField(line)
+			newField, err := SplitStructField(line)
+			if err != nil {
+				return structFields
+			}
 			if newField != nil {
 				structFields = append(structFields, *newField)
 			}
@@ -34,6 +37,5 @@ func GetStructFields(file *os.File, structName string) []entities.Field {
 	if err := scanner.Err(); err != nil {
 		panic(err)
 	}
-
 	return structFields
 }
