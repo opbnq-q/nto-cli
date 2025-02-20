@@ -1,9 +1,9 @@
 package utils
 
 import (
-	"errors"
-	"os"
-	"path/filepath"
+    "errors"
+    "os"
+    "path/filepath"
 )
 
 func FindFrontendPath() string {
@@ -13,7 +13,7 @@ func FindFrontendPath() string {
     }
 
     var dirs []string
-    for currentPath != "/" {
+    for currentPath != filepath.VolumeName(currentPath)+string(os.PathSeparator) {
         dir, file := filepath.Split(currentPath)
         if file != "" {
             dirs = append([]string{file}, dirs...)
@@ -21,7 +21,7 @@ func FindFrontendPath() string {
         currentPath = filepath.Clean(dir)
     }
 
-    if len(dirs) < 2 || dirs[len(dirs)-2] + "/" + dirs[len(dirs)-1] != "frontend/src" {
+    if len(dirs) < 2 || filepath.Join(dirs[len(dirs)-2], dirs[len(dirs)-1]) != filepath.Join("frontend", "src") {
         panic(errors.New("You're not in frontend/src"))
     }
 
@@ -31,13 +31,15 @@ func FindFrontendPath() string {
             break
         }
         if i > 0 {
-            dir = "/" + dir
+            path = filepath.Join(path, dir)
+        } else {
+            path = dir
         }
-        path += dir
     }
 
-    if dirs[0] == "home" {
-      path = "/" + path  
+    if filepath.VolumeName(path) == "" {
+        path = filepath.Join(string(os.PathSeparator), path)
     }
+
     return path
 }
