@@ -75,7 +75,7 @@ func LoadDependencies(fields []entities.Field) string {
 	}
 	insertIntoScheme := ""
 	for _, dep := range dependencies {
-		insertIntoScheme += fmt.Sprintf("scheme.%s.type!.nested!.values = await %sService.readAll()\n", dep.fieldName, strings.ToLower(dep.dependencyName))
+		insertIntoScheme += fmt.Sprintf("(scheme as any).%s.type!.nested!.values = await %sService.readAll()\n", dep.fieldName, strings.ToLower(dep.dependencyName))
 	}
 
 	result += fmt.Sprintf(`onMounted(async () => {
