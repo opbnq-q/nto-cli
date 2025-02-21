@@ -16,7 +16,7 @@ func GenerateService(structName, mkPath string) {
 	}
 	defer serviceFile.Close()
 	_, err = serviceFile.WriteString(fmt.Sprintf(
-		`import { GetAll, Create, Delete, ExportToExcel, GetById, Update, Count } from "%s"
+		`import { GetAll, Create, Delete, GetById, Update, Count } from "%s"
 import type { %s } from "%s"
 import type { IService } from "%s"
 	
