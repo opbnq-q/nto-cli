@@ -30,14 +30,14 @@ export default class %sService implements IService<%s> {
 	}
 
 	async create(item: %s) {
-		return await Create(item)
+		await Create(item)
 	}
 
 	async delete(id: number) {
 		return await Delete(id)
 	}	
 	async update(item: %s) {
-		return await Update(item)
+		await Update(item)
 	}
 	async count() {
 		return await Count()
