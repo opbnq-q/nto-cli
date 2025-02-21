@@ -33,8 +33,8 @@ export default class %sService implements IService<%s> {
 		return await Create(item)
 	}
 
-	async delete(item: %s) {
-		return await Delete(item)
+	async delete(id: number) {
+		return await Delete(id)
 	}	
 	async update(item: %s) {
 		return await Update(item)
@@ -42,11 +42,8 @@ export default class %sService implements IService<%s> {
 	async count() {
 		return await Count()
 	}
-	async exportToExcel() {
-		return await ExportToExcel()
-	}
 }
-`, utils.GetServiceBindPath(structName), structName, utils.GetServiceStructType(structName), utils.GetServiceType(), structName, structName, structName, structName, structName))
+`, utils.GetServiceBindPath(structName), structName, utils.GetServiceStructType(structName), utils.GetServiceType(), structName, structName, structName, structName))
 	if err != nil {
 		panic(err)
 	}
