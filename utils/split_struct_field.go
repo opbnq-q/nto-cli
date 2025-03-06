@@ -9,7 +9,7 @@ import (
 )
 
 func SplitStructField(field string) (*entities.Field, error) {
-	if strings.Contains(field, "type")  {
+	if strings.Contains(field, "type") {
 		return nil, nil
 	}
 	if len(strings.TrimSpace(field)) < 2 {
@@ -19,23 +19,23 @@ func SplitStructField(field string) (*entities.Field, error) {
 	endBacktip := -1
 	var metadata []entities.Medatada
 	if startBacktip > -1 {
-		endBacktip = strings.Index(field[startBacktip + 1:], "`")
+		endBacktip = strings.Index(field[startBacktip+1:], "`")
 		if endBacktip > -1 {
 			endBacktip += startBacktip + 1
-			meta := field[startBacktip + 1 : endBacktip]
+			meta := field[startBacktip+1 : endBacktip]
 			tags, err := structtag.Parse(meta)
 			if err != nil {
 				panic(err)
 			}
 			uiTag, err := tags.Get("ui")
-			if err != nil {
-				panic(err)
-			}
-			uiTags := append([]string{uiTag.Name}, uiTag.Options...)
-			for _, t := range uiTags {
-				analyzed := entities.NewMetadata(t)
-				if analyzed != nil {
-					metadata = append(metadata, *analyzed)
+
+			if err == nil {
+				uiTags := append([]string{uiTag.Name}, uiTag.Options...)
+				for _, t := range uiTags {
+					analyzed := entities.NewMetadata(t)
+					if analyzed != nil {
+						metadata = append(metadata, *analyzed)
+					}
 				}
 			}
 		}
@@ -46,12 +46,11 @@ func SplitStructField(field string) (*entities.Field, error) {
 
 	data := SplitBySingleSpace(field)
 
-
 	name := data[0]
 	dataType := data[1]
 	return &entities.Field{
 		Medatada: metadata,
-		Type: dataType,
-		Name: name,
+		Type:     dataType,
+		Name:     name,
 	}, nil
 }

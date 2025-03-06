@@ -68,7 +68,7 @@ func LoadDependencies(fields []entities.Field) string {
 					fieldName: field.Name,
 					dependencyName: dependency,
 				})
-				result += fmt.Sprintf("import %sService from '../%s/%s.service.ts'\n", dependency, strings.ToUpper(dependency[:1]) + strings.ToLower(dependency[1:]), strings.ToLower(dependency))
+				result += fmt.Sprintf("import %sService from '../%s/%s.service.ts'\n", dependency, strings.ToLower(dependency), strings.ToLower(dependency))
 				result += fmt.Sprintf("const %sService = new %sService\n", strings.ToLower(dependency), strings.ToUpper(dependency[:1]) + strings.ToLower(dependency[1:]))
 			}
 		}

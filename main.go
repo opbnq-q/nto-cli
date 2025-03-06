@@ -1,20 +1,22 @@
 package main
 
 import (
-	input "nto_cli/cmd"
+	"nto_cli/cmd"
 	"nto_cli/generation"
 	"nto_cli/utils"
 	"os"
 )
 
 func main() {
-	structName, path := input.Input()
-	file, err := os.Open(path)
-	if err != nil {
-		panic(err)
-	}
-	defer file.Close()
+	structNames, path := cmd.SelectionInput()
 
-	structFields := utils.GetStructFields(file, structName)
-	generation.Generate(structName, structFields)
+	for _, structName := range structNames {
+		file, err := os.Open(path)
+		if err != nil {
+			panic(err)
+		}
+		structFields := utils.GetStructFields(file, structName)
+		file.Close()
+		generation.Generate(structName, structFields)
+	}
 }

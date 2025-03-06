@@ -12,13 +12,39 @@ type Field struct {
 	Medatada []Medatada
 }
 
-var PRIMITIVE_TYPES = []string{"date", "number", "string", "multiple", "boolean"}
+var PRIMITIVE_TYPES = map[string]string{
+	"date": "date",
+	"number": "number",
+	"string": "string",
+	"multiple": "multiple",
+	"boolean": "boolean",
+	"bool": "boolean",
+	"int": "number",
+	"uint": "number",
+	"float32": "number",
+	"float64": "number",
+	"int32": "number",
+	"int64": "number",
+	"uint32": "number",
+	"uint64": "number",
+	"int8": "number",
+	"int16": "number",
+	"uint8": "number",
+	"uint16": "number",
+	"byte": "number",
+	"rune": "number",
+}
 
 func (f *Field) GenerateType() string {
 	result := "  type: {\n"
 
-	if slices.Contains(PRIMITIVE_TYPES, strings.ToLower(f.Type)) {
-		result += fmt.Sprintf(`    primitive: "%s",`, strings.ToLower(f.Type))
+	keys := make([]string, 0, len(PRIMITIVE_TYPES))
+	for k := range PRIMITIVE_TYPES {
+		keys = append(keys, k)
+	}
+
+	if slices.Contains(keys, strings.ToLower(f.Type)) {
+		result += fmt.Sprintf(`    primitive: "%s",`, PRIMITIVE_TYPES[strings.ToLower(f.Type)])
 	} else {
 		var field string = "[]"
 		for _, meta := range f.Medatada {
