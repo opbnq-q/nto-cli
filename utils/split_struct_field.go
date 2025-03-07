@@ -2,6 +2,7 @@ package utils
 
 import (
 	"errors"
+	"log"
 	"nto_cli/entities"
 	"strings"
 
@@ -13,19 +14,21 @@ func SplitStructField(field string) (*entities.Field, error) {
 		return nil, nil
 	}
 	if len(strings.TrimSpace(field)) < 2 {
-		return nil, errors.New("End")
+		return nil, errors.New("unexpected end of struct field")
 	}
-	startBacktip := strings.Index(field, "`")
-	endBacktip := -1
-	var metadata []entities.Medatada
-	if startBacktip > -1 {
-		endBacktip = strings.Index(field[startBacktip+1:], "`")
-		if endBacktip > -1 {
-			endBacktip += startBacktip + 1
-			meta := field[startBacktip+1 : endBacktip]
+	startBacktick := strings.Index(field, "`")
+	endBacktick := -1
+
+	var metadata []entities.Metadata
+
+	if startBacktick > -1 {
+		endBacktick = strings.Index(field[startBacktick+1:], "`")
+		if endBacktick > -1 {
+			endBacktick += startBacktick + 1
+			meta := field[startBacktick+1 : endBacktick]
 			tags, err := structtag.Parse(meta)
 			if err != nil {
-				panic(err)
+				log.Fatalf("failed to parse struct tag: %s", err)
 			}
 			uiTag, err := tags.Get("ui")
 
@@ -40,9 +43,10 @@ func SplitStructField(field string) (*entities.Field, error) {
 			}
 		}
 	} else {
-		startBacktip = len(field)
+		startBacktick = len(field)
 	}
-	field = strings.TrimSpace(field[:startBacktip])
+
+	field = strings.TrimSpace(field[:startBacktick])
 
 	data := SplitBySingleSpace(field)
 

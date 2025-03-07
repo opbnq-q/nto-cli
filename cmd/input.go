@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"log"
 	"nto_cli/utils"
 	"os"
 
@@ -16,16 +17,20 @@ func Input() (string, string) {
 }
 
 func SelectionInput() ([]string, string) {
+	if len(os.Args) == 1 {
+		log.Fatalf("Please provide path to models.go")
+	}
+
 	path := os.Args[1]
 
 	structNames := utils.GetStructList(path)
 
-	result := []string{}
+	var result []string
 
 	app := tview.NewApplication()
 
 	form := tview.NewForm()
-	checkboxes := []*tview.Checkbox{}
+	var checkboxes []*tview.Checkbox
 
 	for _, name := range structNames {
 		cb := tview.NewCheckbox().SetLabel(name)

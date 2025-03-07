@@ -9,30 +9,30 @@ import (
 type Field struct {
 	Name     string
 	Type     string
-	Medatada []Medatada
+	Medatada []Metadata
 }
 
 var PRIMITIVE_TYPES = map[string]string{
-	"date": "date",
-	"number": "number",
-	"string": "string",
+	"date":     "date",
+	"number":   "number",
+	"string":   "string",
 	"multiple": "multiple",
-	"boolean": "boolean",
-	"bool": "boolean",
-	"int": "number",
-	"uint": "number",
-	"float32": "number",
-	"float64": "number",
-	"int32": "number",
-	"int64": "number",
-	"uint32": "number",
-	"uint64": "number",
-	"int8": "number",
-	"int16": "number",
-	"uint8": "number",
-	"uint16": "number",
-	"byte": "number",
-	"rune": "number",
+	"boolean":  "boolean",
+	"bool":     "boolean",
+	"int":      "number",
+	"uint":     "number",
+	"float32":  "number",
+	"float64":  "number",
+	"int32":    "number",
+	"int64":    "number",
+	"uint32":   "number",
+	"uint64":   "number",
+	"int8":     "number",
+	"int16":    "number",
+	"uint8":    "number",
+	"uint16":   "number",
+	"byte":     "number",
+	"rune":     "number",
 }
 
 func (f *Field) GenerateType() string {

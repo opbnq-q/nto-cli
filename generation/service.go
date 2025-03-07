@@ -7,8 +7,6 @@ import (
 	"strings"
 )
 
-
-
 func GenerateService(structName, mkPath string) {
 	serviceFile, err := os.Create(mkPath + "/" + strings.ToLower(structName) + ".service.ts")
 	if err != nil {
@@ -26,7 +24,7 @@ export default class %sService implements IService<%s> {
 	}
 
 	async readAll() {
-		return await GetAll()
+		return await GetAll() as %s
 	}
 
 	async create(item: %s) {

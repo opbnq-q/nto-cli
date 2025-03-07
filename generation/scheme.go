@@ -2,6 +2,7 @@ package generation
 
 import (
 	"fmt"
+	"log"
 	"nto_cli/entities"
 	"nto_cli/utils"
 	"os"
@@ -10,10 +11,11 @@ import (
 
 func GenerateScheme(structName string, fields []entities.Field, mkPath string) {
 	schemeFile, err := os.Create(mkPath + "/" + strings.ToUpper(structName[:1]) + strings.ToLower(structName[1:]) + "Scheme.vue")
-	if err != nil {
-		panic(err)
-	}
 	defer schemeFile.Close()
+	if err != nil {
+		log.Fatalf("Failed to create file: %s", err)
+	}
+
 	_, err = schemeFile.WriteString(fmt.Sprintf(
 		`<script setup lang="ts">
 import Table from '../table/Table.vue'
@@ -40,7 +42,7 @@ const getDefaults = ()  => getDefaultValues(scheme)
 </template>
 `, strings.ToLower(structName), structName, utils.GetServiceStructType(structName), LoadDependencies(fields), structName, GenerateFields(fields)))
 	if err != nil {
-		panic(err)
+		log.Fatalf("Failed to write to file: %s", err)
 	}
 }
 
@@ -53,23 +55,23 @@ func GenerateFields(fields []entities.Field) string {
 }
 
 func LoadDependencies(fields []entities.Field) string {
-	type Dependency struct{
-		fieldName string
+	type Dependency struct {
+		fieldName      string
 		dependencyName string
-	} 
+	}
 
 	result := ""
-	dependencies := []Dependency{}
+	var dependencies []Dependency
 	for _, field := range fields {
 		for _, meta := range field.Medatada {
 			if meta.Name == "data" {
 				dependency := meta.Values[0]
 				dependencies = append(dependencies, Dependency{
-					fieldName: field.Name,
+					fieldName:      field.Name,
 					dependencyName: dependency,
 				})
 				result += fmt.Sprintf("import %sService from '../%s/%s.service.ts'\n", dependency, strings.ToLower(dependency), strings.ToLower(dependency))
-				result += fmt.Sprintf("const %sService = new %sService\n", strings.ToLower(dependency), strings.ToUpper(dependency[:1]) + strings.ToLower(dependency[1:]))
+				result += fmt.Sprintf("const %sService = new %sService\n", strings.ToLower(dependency), strings.ToUpper(dependency[:1])+strings.ToLower(dependency[1:]))
 			}
 		}
 	}
@@ -80,6 +82,6 @@ func LoadDependencies(fields []entities.Field) string {
 
 	result += fmt.Sprintf(`onMounted(async () => {
   	%s
-})` + "\n", insertIntoScheme)
+})`+"\n", insertIntoScheme)
 	return result
 }

@@ -1,6 +1,6 @@
 module nto_cli
 
-go 1.23.6
+go 1.22.12
 
 require (
 	github.com/fatih/structtag v1.2.0 // indirect
