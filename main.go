@@ -12,11 +12,11 @@ func main() {
 
 	for _, structName := range structNames {
 		file, err := os.Open(path)
+		defer file.Close()
 		if err != nil {
 			panic(err)
 		}
 		structFields := utils.GetStructFields(file, structName)
-		file.Close()
 		generation.Generate(structName, structFields)
 	}
 }
