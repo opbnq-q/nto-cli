@@ -9,7 +9,7 @@ import (
 func FindFrontendPath() string {
 	currentPath, err := os.Getwd()
 	if err != nil {
-		panic(err)
+		log.Fatalf("Failed to find path for frontend: %s", err)
 	}
 
 	var dirs []string

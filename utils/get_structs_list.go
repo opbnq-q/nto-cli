@@ -29,7 +29,7 @@ func GetStructList(filePath string) []string {
 	}
 
 	if s.Err() != nil {
-		log.Fatalf("")
+		log.Fatalf("Unexpected scanner error: %s", err)
 	}
 
 	return structNames
