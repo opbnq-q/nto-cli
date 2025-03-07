@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bufio"
+	"log"
 	"nto_cli/entities"
 	"os"
 	"strings"
@@ -12,7 +13,7 @@ func GetStructFields(file *os.File, structName string) []entities.Field {
 
 	structFound := false
 
-	structFields := []entities.Field{}
+	var structFields []entities.Field
 
 	scanner := bufio.NewScanner(file)
 	for i := 1; scanner.Scan() && bracketsCount > 0; i++ {
@@ -35,7 +36,7 @@ func GetStructFields(file *os.File, structName string) []entities.Field {
 	}
 
 	if err := scanner.Err(); err != nil {
-		panic(err)
+		log.Fatalf("Failed to read file with scanner: %s", err)
 	}
 	return structFields
 }

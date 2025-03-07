@@ -2,12 +2,11 @@ package generation
 
 import (
 	"fmt"
+	"log"
 	"nto_cli/utils"
 	"os"
 	"strings"
 )
-
-
 
 func GenerateService(structName, mkPath string) {
 	serviceFile, err := os.Create(mkPath + "/" + strings.ToLower(structName) + ".service.ts")
@@ -22,11 +21,11 @@ import type { IService } from "%s"
 	
 export default class %sService implements IService<%s> {
 	async read(id: number) {
-		return await GetById(id)
+		return await GetById(id) as %s
 	}
 
 	async readAll() {
-		return await GetAll()
+		return await GetAll() as %s[]
 	}
 
 	async create(item: %s) {
@@ -35,16 +34,18 @@ export default class %sService implements IService<%s> {
 
 	async delete(id: number) {
 		return await Delete(id)
-	}	
+	}
+
 	async update(item: %s) {
 		await Update(item)
 	}
+
 	async count() {
 		return await Count()
 	}
 }
-`, utils.GetServiceBindPath(structName), structName, utils.GetServiceStructType(structName), utils.GetServiceType(), structName, structName, structName, structName))
+`, utils.GetServiceBindPath(structName), structName, utils.GetServiceStructType(structName), utils.GetServiceType(), structName, structName, structName, structName, structName, structName))
 	if err != nil {
-		panic(err)
+		log.Fatalf("Failed to write to file: %s", err)
 	}
 }

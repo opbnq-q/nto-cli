@@ -2,14 +2,14 @@ package utils
 
 import "strings"
 
-func ContainsMany(str string, substrs... string) bool {
-	count := 0
-	for _, substr := range substrs {
+func ContainsMany(str string, substrings ...string) bool {
+	var matches int
+	for _, substr := range substrings {
 		if strings.Contains(str, substr) {
-			count++;
+			matches++
 		} else {
-			return false;
+			return false
 		}
 	}
-	return count == len(substrs)
+	return matches == len(substrings)
 }
