@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 func FindFrontendPath() string {
@@ -12,33 +13,22 @@ func FindFrontendPath() string {
 		log.Fatalf("Failed to find path for frontend: %s", err)
 	}
 
-	var dirs []string
-	for currentPath != filepath.VolumeName(currentPath)+string(os.PathSeparator) {
-		dir, file := filepath.Split(currentPath)
-		if file != "" {
-			dirs = append([]string{file}, dirs...)
-		}
-		currentPath = filepath.Clean(dir)
-	}
-
-	if len(dirs) < 2 || filepath.Join(dirs[len(dirs)-2], dirs[len(dirs)-1]) != filepath.Join("frontend", "src") {
-		log.Fatalf("Run this program in frontend/ directory")
+	frontendSuffix := filepath.Join("frontend")
+	frontendSourceSuffix := filepath.Join("frontend", "src")
+	if strings.HasSuffix(currentPath, frontendSourceSuffix) {
+		return currentPath
 	}
 
 	var path string
-	for i, dir := range dirs {
-		if dir == "frontend" {
-			break
-		}
-		if i > 0 {
-			path = filepath.Join(path, dir)
-		} else {
-			path = dir
-		}
+
+	if strings.HasSuffix(currentPath, frontendSuffix) {
+		path = filepath.Join(currentPath, "src")
+	} else {
+		path = filepath.Join(currentPath, frontendSourceSuffix)
 	}
 
-	if filepath.VolumeName(path) == "" {
-		path = filepath.Join(string(os.PathSeparator), path)
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		log.Fatalf("Frontend source directory not found at %s", path)
 	}
 
 	return path
