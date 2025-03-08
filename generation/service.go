@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 	"strings"
 	"text/template"
 )
@@ -19,7 +20,8 @@ type ServiceTemplateContext struct {
 }
 
 func GenerateService(structName, mkPath string) {
-	serviceFile, err := os.Create(mkPath + "/" + strings.ToLower(structName) + ".service.ts")
+	servicePath := filepath.Join(mkPath, strings.ToLower(structName)+".service.ts")
+	serviceFile, err := os.Create(servicePath)
 	if err != nil {
 		log.Fatalf("Failed to create service file: %s", err)
 	}
@@ -47,4 +49,5 @@ func GenerateService(structName, mkPath string) {
 	if err != nil {
 		log.Fatalf("Failed to execute template: %s", err)
 	}
+	log.Printf("Service for `%s` model is written: %s", structName, servicePath)
 }

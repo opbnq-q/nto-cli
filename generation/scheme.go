@@ -6,6 +6,7 @@ import (
 	"log"
 	"nto_cli/entities"
 	"os"
+	"path/filepath"
 	"strings"
 	"text/template"
 )
@@ -39,8 +40,9 @@ func GenerateScheme(structName string, fields []entities.Field, mkPath string) {
 		Dependencies:       processDependencies(fields),
 	}
 
-	fileName := strings.ToUpper(structName[:1]) + strings.ToLower(structName[1:]) + "Scheme.vue"
-	schemeFile, err := os.Create(mkPath + "/" + fileName)
+	schemeFilename := strings.ToUpper(structName[:1]) + strings.ToLower(structName[1:]) + "Scheme.vue"
+	schemeFilePath := filepath.Join(mkPath, schemeFilename)
+	schemeFile, err := os.Create(schemeFilePath)
 	if err != nil {
 		log.Fatalf("Failed to create file: %s", err)
 	}
@@ -60,6 +62,7 @@ func GenerateScheme(structName string, fields []entities.Field, mkPath string) {
 	if err != nil {
 		log.Fatalf("Failed to execute template: %s", err)
 	}
+	log.Printf("Scheme for `%s` model is written: %s", structName, schemeFilePath)
 }
 
 func processDependencies(fields []entities.Field) []Dependency {
