@@ -18,6 +18,7 @@ func main() {
 			log.Fatalf("Failed to open file: %s", err)
 		}
 		structFields := utils.GetStructFields(file, structName)
+		_ = file.Close()
 		generation.Generate(structName, structFields)
 	}
 }

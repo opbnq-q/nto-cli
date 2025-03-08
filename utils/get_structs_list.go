@@ -7,8 +7,8 @@ import (
 	"strings"
 )
 
-func GetStructList(filePath string) []string {
-	file, err := os.Open(filePath)
+func GetStructsList(modelsFilePath string) []string {
+	file, err := os.Open(modelsFilePath)
 	defer file.Close()
 	if err != nil {
 		log.Fatalf("Failed to open a file: %s", err)

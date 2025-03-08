@@ -13,9 +13,14 @@ func SelectionInput() ([]string, string) {
 		log.Fatalf("Please provide path to models.go")
 	}
 
-	path := os.Args[1]
+	modelsPath := os.Args[1]
 
-	structNames := utils.GetStructList(path)
+	structNames := utils.GetNotImplementedStructs(modelsPath)
+
+	if len(structNames) == 0 {
+		log.Println("No unimplemented models -> nothing to do")
+		os.Exit(0)
+	}
 
 	var result []string
 
@@ -30,7 +35,7 @@ func SelectionInput() ([]string, string) {
 		form.AddFormItem(cb)
 	}
 
-	form.AddButton("Confirm", func() {
+	form.AddButton("Generate", func() {
 		for i, cb := range checkboxes {
 			if cb.IsChecked() {
 				result = append(result, structNames[i])
@@ -43,5 +48,5 @@ func SelectionInput() ([]string, string) {
 		panic(err)
 	}
 
-	return result, path
+	return result, modelsPath
 }

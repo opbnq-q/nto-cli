@@ -10,9 +10,7 @@ import (
 
 func GetStructFields(file *os.File, structName string) []entities.Field {
 	bracketsCount := 1
-
-	structFound := false
-
+	var structFound bool
 	var structFields []entities.Field
 
 	scanner := bufio.NewScanner(file)
