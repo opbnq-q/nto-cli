@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"nto_cli/entities"
+	"nto_cli/utils"
 	"os"
 	"path/filepath"
 	"strings"
@@ -63,6 +64,7 @@ func GenerateScheme(structName string, fields []entities.Field, mkPath string) {
 		log.Fatalf("Failed to execute template: %s", err)
 	}
 	log.Printf("Scheme for `%s` model is written: %s", structName, schemeFilePath)
+	_ = utils.FormatFilesWithPrettier([]string{schemeFilePath})
 }
 
 func processDependencies(fields []entities.Field) []Dependency {

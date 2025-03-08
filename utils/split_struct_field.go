@@ -25,14 +25,13 @@ func SplitStructField(field string) (*entities.Field, error) {
 		endBacktick = strings.Index(field[startBacktick+1:], "`")
 		if endBacktick > -1 {
 			endBacktick += startBacktick + 1
-			meta := field[startBacktick+1 : endBacktick]
-			tags, err := structtag.Parse(meta)
+			structTag := field[startBacktick+1 : endBacktick]
+			tags, err := structtag.Parse(structTag)
 			if err != nil {
 				log.Fatalf("failed to parse struct tag: %s", err)
 			}
-			uiTag, err := tags.Get("ui")
 
-			if err == nil {
+			if uiTag, e := tags.Get("ui"); e == nil {
 				uiTags := append([]string{uiTag.Name}, uiTag.Options...)
 				for _, t := range uiTags {
 					analyzed := entities.NewMetadata(t)

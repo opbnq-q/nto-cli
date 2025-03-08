@@ -4,6 +4,7 @@ import (
 	_ "embed"
 	"fmt"
 	"log"
+	"nto_cli/utils"
 	"os"
 	"path/filepath"
 	"strings"
@@ -50,4 +51,5 @@ func GenerateService(structName, mkPath string) {
 		log.Fatalf("Failed to execute template: %s", err)
 	}
 	log.Printf("Service for `%s` model is written: %s", structName, servicePath)
+	_ = utils.FormatFilesWithPrettier([]string{servicePath})
 }
