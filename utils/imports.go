@@ -10,11 +10,6 @@ func GetServiceBindPath(structName string) string {
 	return path
 }
 
-func GetServiceStructType(structName string) string {
-	path := "../../bindings/app/internal/services/models.ts"
-	return path
-}
-
 func GetServiceType() string {
 	path := "../types/service.type.ts"
 	return path

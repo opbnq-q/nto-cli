@@ -18,7 +18,7 @@ func GenerateService(structName, mkPath string) {
 		`import { GetAll, Create, Delete, GetById, Update, Count } from "%s"
 import type { %s } from "%s"
 import type { IService } from "%s"
-	
+
 export default class %sService implements IService<%s> {
 	async read(id: number) {
 		return await GetById(id) as %s
@@ -44,7 +44,7 @@ export default class %sService implements IService<%s> {
 		return await Count()
 	}
 }
-`, utils.GetServiceBindPath(structName), structName, utils.GetServiceStructType(structName), utils.GetServiceType(), structName, structName, structName, structName, structName, structName))
+`, utils.GetServiceBindPath(structName), structName, GolangServicesPath, utils.GetServiceType(), structName, structName, structName, structName, structName, structName))
 	if err != nil {
 		log.Fatalf("Failed to write to file: %s", err)
 	}

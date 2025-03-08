@@ -1,0 +1,35 @@
+<script setup lang="ts">
+import Table from '../table/Table.vue'
+import { onMounted, reactive } from 'vue'
+import { getDefaultValues } from '../utils/structs/defaults.util'
+import Service from './{{.LowerName}}.service.ts'
+import type { Scheme } from '../types/scheme.type'
+import { {{.StructName}} } from '{{.GolangServicesPath}}'
+{{range .Dependencies}}
+import {{.ImportName}} from '../{{.LowerName}}/{{.LowerName}}.service.ts'
+const {{.ServiceName}} = new {{.ImportName}}
+{{end}}
+
+const service = new Service
+
+onMounted(async () => {
+	{{range .Dependencies}}
+  (scheme as any).{{.FieldName}}.type!.nested!.values = await {{.ServiceName}}.readAll()
+	{{end}}
+})
+
+const scheme: Scheme<{{.StructName}}> = reactive({
+{{range .Fields}}
+  {{.Name}}: {{.Generate}},
+{{end}}
+})
+
+const getDefaults = () => getDefaultValues(scheme)
+
+</script>
+
+<template>
+	<main class="w-screen h-screen">
+		<Table :scheme :service :getDefaults></Table>
+	</main>
+</template>

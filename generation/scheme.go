@@ -1,87 +1,78 @@
 package generation
 
 import (
+	_ "embed"
 	"fmt"
 	"log"
 	"nto_cli/entities"
-	"nto_cli/utils"
 	"os"
 	"strings"
+	"text/template"
 )
 
+//go:embed templates/scheme.tmpl
+var SchemeTemplate string
+
+const GolangServicesPath = "../../bindings/app/internal/services"
+
+type Dependency struct {
+	ImportName  string
+	ServiceName string
+	LowerName   string
+	FieldName   string
+}
+
+type TemplateData struct {
+	StructName         string
+	LowerName          string
+	GolangServicesPath string
+	Fields             []entities.Field
+	Dependencies       []Dependency
+}
+
 func GenerateScheme(structName string, fields []entities.Field, mkPath string) {
-	schemeFile, err := os.Create(mkPath + "/" + strings.ToUpper(structName[:1]) + strings.ToLower(structName[1:]) + "Scheme.vue")
-	defer schemeFile.Close()
+	data := TemplateData{
+		StructName:         structName,
+		LowerName:          strings.ToLower(structName),
+		GolangServicesPath: GolangServicesPath,
+		Fields:             fields,
+		Dependencies:       processDependencies(fields),
+	}
+
+	fileName := strings.ToUpper(structName[:1]) + strings.ToLower(structName[1:]) + "Scheme.vue"
+	schemeFile, err := os.Create(mkPath + "/" + fileName)
 	if err != nil {
 		log.Fatalf("Failed to create file: %s", err)
 	}
+	defer schemeFile.Close()
 
-	_, err = schemeFile.WriteString(fmt.Sprintf(
-		`<script setup lang="ts">
-import Table from '../table/Table.vue'
-import { onMounted, reactive } from 'vue'
-import { getDefaultValues } from '../utils/structs/defaults.util'
-import S from './%s.service.ts'
-import type { Scheme } from '../types/scheme.type'
-import { %s } from '%s'
-
-const service = new S
-
-%s
-
-const scheme: Scheme<%s> = reactive(%s)
-
-const getDefaults = ()  => getDefaultValues(scheme)
-
-</script>
-
-<template>
-	<main class="w-screen h-screen">
-		<Table :scheme :service :getDefaults></Table>
-	</main>
-</template>
-`, strings.ToLower(structName), structName, utils.GetServiceStructType(structName), LoadDependencies(fields), structName, GenerateFields(fields)))
+	tmpl, err := template.New("scheme").Parse(SchemeTemplate)
 	if err != nil {
-		log.Fatalf("Failed to write to file: %s", err)
+		panic(fmt.Sprintf("Failed to parse template: %s", err))
+	}
+
+	err = tmpl.Execute(schemeFile, data)
+	if err != nil {
+		log.Fatalf("Failed to execute template: %s", err)
 	}
 }
 
-func GenerateFields(fields []entities.Field) string {
-	result := "{\n"
-	for _, field := range fields {
-		result += field.Name + ":" + field.Generate() + ", \n"
-	}
-	return result + "\n}"
-}
+func processDependencies(fields []entities.Field) []Dependency {
+	dependencies := []Dependency{}
 
-func LoadDependencies(fields []entities.Field) string {
-	type Dependency struct {
-		fieldName      string
-		dependencyName string
-	}
-
-	result := ""
-	var dependencies []Dependency
 	for _, field := range fields {
-		for _, meta := range field.Medatada {
+		for _, meta := range field.Metadata {
 			if meta.Name == "data" {
 				dependency := meta.Values[0]
 				dependencies = append(dependencies, Dependency{
-					fieldName:      field.Name,
-					dependencyName: dependency,
+					ImportName:  strings.ToUpper(dependency[:1]) + strings.ToLower(dependency[1:]) + "Service",
+					ServiceName: strings.ToLower(dependency) + "Service",
+					LowerName:   strings.ToLower(dependency),
+					FieldName:   field.Name,
 				})
-				result += fmt.Sprintf("import %sService from '../%s/%s.service.ts'\n", dependency, strings.ToLower(dependency), strings.ToLower(dependency))
-				result += fmt.Sprintf("const %sService = new %sService\n", strings.ToLower(dependency), strings.ToUpper(dependency[:1])+strings.ToLower(dependency[1:]))
 			}
 		}
 	}
-	insertIntoScheme := ""
-	for _, dep := range dependencies {
-		insertIntoScheme += fmt.Sprintf("(scheme as any).%s.type!.nested!.values = await %sService.readAll()\n", dep.fieldName, strings.ToLower(dep.dependencyName))
-	}
 
-	result += fmt.Sprintf(`onMounted(async () => {
-  	%s
-})`+"\n", insertIntoScheme)
-	return result
+	return dependencies
 }

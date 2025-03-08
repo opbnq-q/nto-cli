@@ -9,7 +9,7 @@ import (
 type Field struct {
 	Name     string
 	Type     string
-	Medatada []Metadata
+	Metadata []Metadata
 }
 
 var PrimitiveTypes = map[string]string{
@@ -47,7 +47,7 @@ func (f *Field) GenerateType() string {
 		result += fmt.Sprintf(`    primitive: "%s",`, PrimitiveTypes[strings.ToLower(f.Type)])
 	} else {
 		var field = "[]"
-		for _, meta := range f.Medatada {
+		for _, meta := range f.Metadata {
 			if meta.Name == "field" {
 				if len(meta.Values) > 0 {
 					field = "['" + strings.Join(meta.Values, "', '") + "']"
@@ -65,7 +65,7 @@ func (f *Field) GenerateType() string {
 
 func (f *Field) Generate() string {
 	result := "{\n"
-	for _, meta := range f.Medatada {
+	for _, meta := range f.Metadata {
 		if meta.Name == "hidden" {
 			result += "  hidden: true,\n"
 		} else if meta.Name == "label" {

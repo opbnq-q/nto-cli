@@ -53,7 +53,7 @@ func SplitStructField(field string) (*entities.Field, error) {
 	name := data[0]
 	dataType := data[1]
 	return &entities.Field{
-		Medatada: metadata,
+		Metadata: metadata,
 		Type:     dataType,
 		Name:     name,
 	}, nil
