@@ -44,7 +44,12 @@ func GenerateScheme(structName string, fields []entities.Field, mkPath string) {
 	if err != nil {
 		log.Fatalf("Failed to create file: %s", err)
 	}
-	defer schemeFile.Close()
+	defer func(schemeFile *os.File) {
+		err := schemeFile.Close()
+		if err != nil {
+			log.Fatalf("Failed to close file: %s", err)
+		}
+	}(schemeFile)
 
 	tmpl, err := template.New("scheme").Parse(SchemeTemplate)
 	if err != nil {
@@ -58,7 +63,7 @@ func GenerateScheme(structName string, fields []entities.Field, mkPath string) {
 }
 
 func processDependencies(fields []entities.Field) []Dependency {
-	dependencies := []Dependency{}
+	var dependencies []Dependency
 
 	for _, field := range fields {
 		for _, meta := range field.Metadata {

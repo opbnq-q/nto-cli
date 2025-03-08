@@ -1,51 +1,50 @@
 package generation
 
 import (
+	_ "embed"
 	"fmt"
 	"log"
-	"nto_cli/utils"
 	"os"
 	"strings"
+	"text/template"
 )
+
+//go:embed templates/service.tmpl
+var ServiceTemplate string
+
+type ServiceTemplateContext struct {
+	LowerModelName string
+	ModelName      string
+	ServicesPath   string
+}
 
 func GenerateService(structName, mkPath string) {
 	serviceFile, err := os.Create(mkPath + "/" + strings.ToLower(structName) + ".service.ts")
 	if err != nil {
-		panic(err)
-	}
-	defer serviceFile.Close()
-	_, err = serviceFile.WriteString(fmt.Sprintf(
-		`import { GetAll, Create, Delete, GetById, Update, Count } from "%s"
-import type { %s } from "%s"
-import type { IService } from "%s"
-
-export default class %sService implements IService<%s> {
-	async read(id: number) {
-		return await GetById(id) as %s
+		log.Fatalf("Failed to create service file: %s", err)
 	}
 
-	async readAll() {
-		return await GetAll() as %s[]
+	defer func(serviceFile *os.File) {
+		err := serviceFile.Close()
+		if err != nil {
+			log.Fatalf("Failed to close file: %s", err)
+		}
+	}(serviceFile)
+
+	context := ServiceTemplateContext{
+		LowerModelName: strings.ToLower(structName),
+		ModelName:      structName,
+		ServicesPath:   GolangServicesPath,
 	}
 
-	async create(item: %s) {
-		await Create(item)
-	}
+	serviceTemplate, err := template.New("service").Parse(ServiceTemplate)
 
-	async delete(id: number) {
-		return await Delete(id)
-	}
-
-	async update(item: %s) {
-		await Update(item)
-	}
-
-	async count() {
-		return await Count()
-	}
-}
-`, utils.GetServiceBindPath(structName), structName, GolangServicesPath, utils.GetServiceType(), structName, structName, structName, structName, structName, structName))
 	if err != nil {
-		log.Fatalf("Failed to write to file: %s", err)
+		panic(fmt.Sprintf("Failed to parse service template: %s", err))
+	}
+
+	err = serviceTemplate.Execute(serviceFile, context)
+	if err != nil {
+		log.Fatalf("Failed to execute template: %s", err)
 	}
 }
