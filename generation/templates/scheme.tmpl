@@ -19,6 +19,7 @@ onMounted(async () => {
 })
 
 const scheme: Scheme<{{.StructName}}> = reactive({
+    entityId: "{{.StructName}}Id",
 {{range .Fields}}
   {{.Name}}: {{.GenerateFieldCode}},
 {{end}}
