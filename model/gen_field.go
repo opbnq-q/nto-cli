@@ -11,6 +11,7 @@ const fieldTemplate = `{
 {{ end }}{{ if .Metadata.Label }}  russian: "{{ .Metadata.Label }}",
 {{ end }}{{ if .Metadata.Readonly }}  readonly: true,
 {{ end }}{{ if .IsArray }}  many: true,
+{{ end }}{{ if eq .Datatype "datetime" }} date: true,
 {{ end }}{{ .GeneratedType }}
 }`
 
@@ -18,6 +19,7 @@ type FieldTemplateContext struct {
 	Metadata      FieldMetadata
 	IsArray       bool
 	GeneratedType string
+	Datatype      string
 }
 
 func (field *Field) GenerateFieldCode() string {
@@ -30,6 +32,7 @@ func (field *Field) GenerateFieldCode() string {
 		Metadata:      field.Metadata,
 		IsArray:       field.Metadata.IsSlice,
 		GeneratedType: field.GenerateType(),
+		Datatype:      field.Metadata.Datatype,
 	}
 
 	var result bytes.Buffer

@@ -94,6 +94,7 @@ func parseModelDecl(fileset *token.FileSet, decl *ast.TypeSpec) Model {
 			metadata.Label = uiTag.GetParamOr("label", "")
 			metadata.IsSlice = utils.IsSlice(fieldDecl.Type)
 			metadata.IsPrimitiveType = utils.IsPrimitiveType(fieldDecl.Type)
+			metadata.Readonly = uiTag.HasOption("readonly")
 			metadata.Datatype = uiTag.GetParamOr("datatype", "")
 			if uiTag.HasParam("field") {
 				metadata.RelatedFields = strings.Split(uiTag.GetParam("field").Value, ".")

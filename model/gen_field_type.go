@@ -9,6 +9,7 @@ import (
 )
 
 var PrimitiveTypes = map[string]string{
+	"date":    "date",
 	"string":  "string",
 	"boolean": "boolean",
 	"bool":    "boolean",
@@ -51,7 +52,14 @@ func (field *Field) GenerateType() string {
 
 	if field.Metadata.IsPrimitiveType {
 		data.IsPrimitive = true
-		typeName := field.Type.(*ast.Ident).Name
+		var typeName string
+		// TODO: resolve datatype in other function
+		switch field.Metadata.Datatype {
+		case "datetime":
+			typeName = "date"
+		default:
+			typeName = field.Type.(*ast.Ident).Name
+		}
 		data.PrimitiveType = PrimitiveTypes[typeName]
 	} else {
 		data.IsPrimitive = false
