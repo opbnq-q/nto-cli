@@ -1,16 +1,14 @@
-package entities
+package model
 
 import (
 	"bytes"
 	"fmt"
-	"slices"
+	"go/ast"
 	"strings"
 	"text/template"
 )
 
 var PrimitiveTypes = map[string]string{
-	"date":    "date",
-	"number":  "number",
 	"string":  "string",
 	"boolean": "boolean",
 	"bool":    "boolean",
@@ -43,7 +41,7 @@ type TypeTemplateContext struct {
 	Field         string
 }
 
-func (f *Field) GenerateType() string {
+func (field *Field) GenerateType() string {
 	keys := make([]string, 0, len(PrimitiveTypes))
 	for k := range PrimitiveTypes {
 		keys = append(keys, k)
@@ -51,19 +49,13 @@ func (f *Field) GenerateType() string {
 
 	var data TypeTemplateContext
 
-	if slices.Contains(keys, strings.ToLower(f.Type)) {
+	if field.Metadata.IsPrimitiveType {
 		data.IsPrimitive = true
-		data.PrimitiveType = PrimitiveTypes[strings.ToLower(f.Type)]
+		typeName := field.Type.(*ast.Ident).Name
+		data.PrimitiveType = PrimitiveTypes[typeName]
 	} else {
 		data.IsPrimitive = false
-		field := "[]"
-		for _, meta := range f.Metadata {
-			if meta.Name == "field" && len(meta.Values) > 0 {
-				field = "['" + strings.Join(meta.Values, "', '") + "']"
-				break
-			}
-		}
-		data.Field = field
+		data.Field = "['" + strings.Join(field.Metadata.RelatedFields, "', '") + "']"
 	}
 
 	tmpl, err := template.New("type").Parse(typeTemplate)

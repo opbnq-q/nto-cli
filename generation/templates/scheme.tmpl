@@ -20,7 +20,7 @@ onMounted(async () => {
 
 const scheme: Scheme<{{.StructName}}> = reactive({
 {{range .Fields}}
-  {{.Name}}: {{.Generate}},
+  {{.Name}}: {{.GenerateFieldCode}},
 {{end}}
 })
 

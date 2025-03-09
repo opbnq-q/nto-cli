@@ -2,35 +2,28 @@ package cmd
 
 import (
 	"log"
-	"nto_cli/utils"
+	"nto_cli/model"
 	"os"
 
 	"github.com/rivo/tview"
 )
 
-func SelectionInput() ([]string, string) {
-	if len(os.Args) == 1 {
-		log.Fatalf("Please provide path to models.go")
-	}
+func SelectionInput(models []model.Model) *[]model.Model {
+	unimplementedModels := model.GetNotImplementedModels(models)
+	var result []model.Model
 
-	modelsPath := os.Args[1]
-
-	structNames := utils.GetNotImplementedStructs(modelsPath)
-
-	if len(structNames) == 0 {
+	if len(unimplementedModels) == 0 {
 		log.Println("No unimplemented models -> nothing to do")
 		os.Exit(0)
 	}
-
-	var result []string
 
 	app := tview.NewApplication()
 
 	form := tview.NewForm()
 	var checkboxes []*tview.Checkbox
 
-	for _, name := range structNames {
-		cb := tview.NewCheckbox().SetLabel(name)
+	for _, m := range unimplementedModels {
+		cb := tview.NewCheckbox().SetLabel(m.Name)
 		checkboxes = append(checkboxes, cb)
 		form.AddFormItem(cb)
 	}
@@ -38,15 +31,15 @@ func SelectionInput() ([]string, string) {
 	form.AddButton("Generate", func() {
 		for i, cb := range checkboxes {
 			if cb.IsChecked() {
-				result = append(result, structNames[i])
+				result = append(result, unimplementedModels[i])
 			}
 		}
 		app.Stop()
 	})
 
 	if err := app.SetRoot(form, true).Run(); err != nil {
-		panic(err)
+		log.Fatalf("Failed to initialize dialog: %s", err)
 	}
 
-	return result, modelsPath
+	return &result
 }

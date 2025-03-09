@@ -4,7 +4,7 @@ import (
 	_ "embed"
 	"fmt"
 	"log"
-	"nto_cli/entities"
+	"nto_cli/model"
 	"nto_cli/utils"
 	"os"
 	"path/filepath"
@@ -28,20 +28,20 @@ type TemplateData struct {
 	StructName         string
 	LowerName          string
 	GolangServicesPath string
-	Fields             []entities.Field
+	Fields             []model.Field
 	Dependencies       []Dependency
 }
 
-func GenerateScheme(structName string, fields []entities.Field, mkPath string) {
+func GenerateScheme(model *model.Model, mkPath string) {
 	data := TemplateData{
-		StructName:         structName,
-		LowerName:          strings.ToLower(structName),
+		StructName:         model.Name,
+		LowerName:          strings.ToLower(model.Name),
 		GolangServicesPath: GolangServicesPath,
-		Fields:             fields,
-		Dependencies:       processDependencies(fields),
+		Fields:             model.Fields,
+		Dependencies:       processDependencies(model.Fields),
 	}
 
-	schemeFilename := strings.ToUpper(structName[:1]) + strings.ToLower(structName[1:]) + "Scheme.vue"
+	schemeFilename := strings.ToUpper(model.Name[:1]) + strings.ToLower(model.Name[1:]) + "Scheme.vue"
 	schemeFilePath := filepath.Join(mkPath, schemeFilename)
 	schemeFile, err := os.Create(schemeFilePath)
 	if err != nil {
@@ -63,25 +63,25 @@ func GenerateScheme(structName string, fields []entities.Field, mkPath string) {
 	if err != nil {
 		log.Fatalf("Failed to execute template: %s", err)
 	}
-	log.Printf("Scheme for `%s` model is written: %s", structName, schemeFilePath)
+	log.Printf("Scheme for `%s` model is written: %s", model.Name, schemeFilePath)
 	_ = utils.FormatFilesWithPrettier([]string{schemeFilePath})
 }
 
-func processDependencies(fields []entities.Field) []Dependency {
+func processDependencies(fields []model.Field) []Dependency {
 	var dependencies []Dependency
 
 	for _, field := range fields {
-		for _, meta := range field.Metadata {
-			if meta.Name == "data" {
-				dependency := meta.Values[0]
-				dependencies = append(dependencies, Dependency{
-					ImportName:  strings.ToUpper(dependency[:1]) + strings.ToLower(dependency[1:]) + "Service",
-					ServiceName: strings.ToLower(dependency) + "Service",
-					LowerName:   strings.ToLower(dependency),
-					FieldName:   field.Name,
-				})
-			}
+		dependency := field.Metadata.RelatedModel
+		if dependency == "" {
+			continue
 		}
+		dependencies = append(dependencies, Dependency{
+			ImportName:  strings.ToUpper(dependency[:1]) + strings.ToLower(dependency[1:]) + "Service",
+			ServiceName: strings.ToLower(dependency) + "Service",
+			LowerName:   strings.ToLower(dependency),
+			FieldName:   field.Name,
+		})
+
 	}
 
 	return dependencies

@@ -4,21 +4,20 @@ import (
 	"log"
 	"nto_cli/cmd"
 	"nto_cli/generation"
+	"nto_cli/model"
 	"nto_cli/utils"
-	"os"
 )
 
 func main() {
 	log.SetFlags(0)
-	structNames, path := cmd.SelectionInput()
+	modelsPath := utils.GetModelsPath()
+	models, err := model.ParseModelsPackage(modelsPath)
+	if err != nil {
+		log.Fatalf("Failed to parse models: %s", err)
+	}
+	selectedModels := cmd.SelectionInput(models)
 
-	for _, structName := range structNames {
-		file, err := os.Open(path)
-		if err != nil {
-			log.Fatalf("Failed to open file: %s", err)
-		}
-		structFields := utils.GetStructFields(file, structName)
-		_ = file.Close()
-		generation.Generate(structName, structFields)
+	for _, m := range *selectedModels {
+		generation.Generate(&m)
 	}
 }

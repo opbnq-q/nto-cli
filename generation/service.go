@@ -4,6 +4,7 @@ import (
 	_ "embed"
 	"fmt"
 	"log"
+	"nto_cli/model"
 	"nto_cli/utils"
 	"os"
 	"path/filepath"
@@ -20,8 +21,8 @@ type ServiceTemplateContext struct {
 	ServicesPath   string
 }
 
-func GenerateService(structName, mkPath string) {
-	servicePath := filepath.Join(mkPath, strings.ToLower(structName)+".service.ts")
+func GenerateService(model *model.Model, mkPath string) {
+	servicePath := filepath.Join(mkPath, strings.ToLower(model.Name)+".service.ts")
 	serviceFile, err := os.Create(servicePath)
 	if err != nil {
 		log.Fatalf("Failed to create service file: %s", err)
@@ -35,8 +36,8 @@ func GenerateService(structName, mkPath string) {
 	}(serviceFile)
 
 	context := ServiceTemplateContext{
-		LowerModelName: strings.ToLower(structName),
-		ModelName:      structName,
+		LowerModelName: strings.ToLower(model.Name),
+		ModelName:      model.Name,
 		ServicesPath:   GolangServicesPath,
 	}
 
@@ -50,6 +51,6 @@ func GenerateService(structName, mkPath string) {
 	if err != nil {
 		log.Fatalf("Failed to execute template: %s", err)
 	}
-	log.Printf("Service for `%s` model is written: %s", structName, servicePath)
+	log.Printf("Service for `%s` model is written: %s", model.Name, servicePath)
 	_ = utils.FormatFilesWithPrettier([]string{servicePath})
 }
