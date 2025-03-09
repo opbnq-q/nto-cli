@@ -5,6 +5,8 @@ import { getDefaultValues } from '../utils/structs/defaults.util'
 import Service from './{{.LowerName}}.service.ts'
 import type { Scheme } from '../types/scheme.type'
 import { {{.StructName}} } from '{{.GolangServicesPath}}'
+import { ref } from 'vue'
+import type { Validate } from '../types/validate.type'
 {{range .Dependencies}}
 import {{.ImportName}} from '../{{.LowerName}}/{{.LowerName}}.service.ts'
 const {{.ServiceName}} = new {{.ImportName}}
@@ -12,10 +14,18 @@ const {{.ServiceName}} = new {{.ImportName}}
 
 const service = new Service
 
+const items = ref<{{ .StructName }}[]>([])
+
+const load = async () => {
+  {{range .Dependencies}}
+  (scheme as any).{{.FieldName}}.type!.nested!.values = await {{.ServiceName}}.readAll();
+  {{end}}
+  items.value = await service.readAll();
+  return items.value;
+};
+
 onMounted(async () => {
-	{{range .Dependencies}}
-  (scheme as any).{{.FieldName}}.type!.nested!.values = await {{.ServiceName}}.readAll()
-	{{end}}
+	load()	
 })
 
 const scheme: Scheme<{{.StructName}}> = reactive({
@@ -27,10 +37,16 @@ const scheme: Scheme<{{.StructName}}> = reactive({
 
 const getDefaults = () => getDefaultValues(scheme)
 
+const validate: Validate<{{.StructName}}> = (entity) => {
+  return {
+    status: 'success'
+  }
+};
+
 </script>
 
 <template>
 	<main class="w-screen h-screen">
-		<Table :scheme :service :getDefaults></Table>
+		<Table :scheme :service :get-defaults :load :items :validate></Table>
 	</main>
 </template>
