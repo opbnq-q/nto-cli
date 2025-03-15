@@ -2,15 +2,14 @@
 import Table from '../table/Table.vue'
 import { onMounted, reactive } from 'vue'
 import { getDefaultValues } from '../utils/structs/defaults.util'
-import Service from './{{.LowerName}}.service.ts'
+import Service from './{{.LowerName}}.service'
 import type { Scheme } from '../types/scheme.type'
 import { {{.StructName}} } from '{{.GolangServicesPath}}'
 import { ref } from 'vue'
 import type { Validate } from "../types/validate.type";
-import { getDefaultSortOptions } from "../utils/structs/default-sort-options.util.ts";
-import type { Validate } from '../types/validate.type'
+import { getDefaultSortOptions } from "../utils/structs/default-sort-options.util";
 {{range .Dependencies}}
-import {{.ImportName}} from '../{{.LowerName}}/{{.LowerName}}.service.ts'
+import {{.ImportName}} from '../{{.LowerName}}/{{.LowerName}}.service'
 const {{.ServiceName}} = new {{.ImportName}}
 {{end}}
 

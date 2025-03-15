@@ -1,7 +1,7 @@
-import { GetAll, Create, Delete, GetById, Update, Count, SortedByOrder, SearchByAllTextFields } from "../../bindings/app/internal/services/{{.LowerModelName}}service.ts"
+import { GetAll, Create, Delete, GetById, Update, Count, SortedByOrder, SearchByAllTextFields } from "../../bindings/app/internal/services/{{.LowerModelName}}service"
 import type { {{.ModelName}} } from "{{.ServicesPath}}"
-import type { IService } from "../types/service.type.ts"
-import type { SortOptions } from "../types/sort-options.type.ts";
+import type { IService } from "../types/service.type"
+import type { SortOptions } from "../types/sort-options.type";
 
 
 export default class {{.ModelName}}Service implements IService<{{.ModelName}}> {
