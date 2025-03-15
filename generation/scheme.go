@@ -69,16 +69,19 @@ func GenerateScheme(model *model.Model, mkPath string) {
 
 func processDependencies(fields []model.Field) []Dependency {
 	var dependencies []Dependency
+	encountered := make(map[string]bool)
 
 	for _, field := range fields {
-		dependency := field.Metadata.RelatedModel
-		if dependency == "" {
+		dep := field.Metadata.RelatedModel
+		if dep == "" || encountered[dep] {
 			continue
 		}
+		encountered[dep] = true
+
 		dependencies = append(dependencies, Dependency{
-			ImportName:  strings.ToUpper(dependency[:1]) + strings.ToLower(dependency[1:]) + "Service",
-			ServiceName: strings.ToLower(dependency) + "Service",
-			LowerName:   strings.ToLower(dependency),
+			ImportName:  strings.ToUpper(dep[:1]) + strings.ToLower(dep[1:]) + "Service",
+			ServiceName: strings.ToLower(dep) + "Service",
+			LowerName:   strings.ToLower(dep),
 			FieldName:   field.Name,
 		})
 
