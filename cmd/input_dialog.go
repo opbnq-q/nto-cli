@@ -23,7 +23,7 @@ func SelectionInput(models []model.Model) *[]model.Model {
 	var checkboxes []*tview.Checkbox
 
 	for _, m := range unimplementedModels {
-		cb := tview.NewCheckbox().SetLabel(m.Name)
+		cb := tview.NewCheckbox().SetLabel(m.Name).SetChecked(true)
 		checkboxes = append(checkboxes, cb)
 		form.AddFormItem(cb)
 	}
