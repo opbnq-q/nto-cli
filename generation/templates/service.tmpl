@@ -1,6 +1,8 @@
-import { GetAll, Create, Delete, GetById, Update, Count } from "../../bindings/app/internal/services/{{.LowerModelName}}service.ts"
+import { GetAll, Create, Delete, GetById, Update, Count, SortedByOrder, SearchByAllTextFields } from "../../bindings/app/internal/services/{{.LowerModelName}}service.ts"
 import type { {{.ModelName}} } from "{{.ServicesPath}}"
 import type { IService } from "../types/service.type.ts"
+import type { SortOptions } from "../types/sort-options.type.ts";
+
 
 export default class {{.ModelName}}Service implements IService<{{.ModelName}}> {
 	async read(id: number) {
@@ -25,5 +27,13 @@ export default class {{.ModelName}}Service implements IService<{{.ModelName}}> {
 
 	async count() {
 		return await Count()
+	}
+
+	async search(input: string) {
+		return await SearchByAllTextFields(input) as {{ .ModelName }}[]
+	}
+
+	async sort(options: SortOptions<{{ .ModelName }}>) {
+		return await SortedByOrder(Object.entries(options).map(item => ({Name: item[0], Order: item[1]}))) as {{ .ModelName }}[]
 	}
 }
