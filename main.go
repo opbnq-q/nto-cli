@@ -1,11 +1,11 @@
 package main
 
 import (
+	"github.com/opbnq-q/nto-cli/cmd"
+	"github.com/opbnq-q/nto-cli/generation"
+	"github.com/opbnq-q/nto-cli/model"
+	"github.com/opbnq-q/nto-cli/utils"
 	"log"
-	"nto_cli/cmd"
-	"nto_cli/generation"
-	"nto_cli/model"
-	"nto_cli/utils"
 )
 
 func main() {

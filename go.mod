@@ -1,9 +1,8 @@
-module nto_cli
+module github.com/opbnq-q/nto-cli
 
 go 1.22.12
 
 require (
-	github.com/fatih/structtag v1.2.0 // indirect
 	github.com/gdamore/encoding v1.0.0 // indirect
 	github.com/gdamore/tcell/v2 v2.7.1 // indirect
 	github.com/kuzgoga/fogg v0.1.2 // indirect
