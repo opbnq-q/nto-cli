@@ -1,9 +1,9 @@
 package generation
 
 import (
+	"github.com/opbnq-q/nto-cli/model"
+	"github.com/opbnq-q/nto-cli/utils"
 	"log"
-	"nto_cli/model"
-	"nto_cli/utils"
 	"os"
 	"path/filepath"
 	"strings"

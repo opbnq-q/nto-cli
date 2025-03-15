@@ -1,8 +1,8 @@
 package cmd
 
 import (
+	"github.com/opbnq-q/nto-cli/model"
 	"log"
-	"nto_cli/model"
 	"os"
 
 	"github.com/rivo/tview"

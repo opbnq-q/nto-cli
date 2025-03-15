@@ -1,6 +1,6 @@
 package model
 
-import "nto_cli/utils"
+import "github.com/opbnq-q/nto-cli/utils"
 
 func GetNotImplementedModels(models []Model) []Model {
 	var unimplementedModels []Model

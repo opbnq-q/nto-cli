@@ -1,11 +1,11 @@
 package model
 
 import (
+	"github.com/opbnq-q/nto-cli/utils"
 	"go/ast"
 	"go/parser"
 	"go/token"
 	"log/slog"
-	"nto_cli/utils"
 	"os"
 	"path/filepath"
 	"strings"
