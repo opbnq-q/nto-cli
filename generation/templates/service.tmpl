@@ -33,7 +33,7 @@ export default class {{.ModelName}}Service implements IService<{{.ModelName}}> {
 		return await SearchByAllTextFields(input) as {{ .ModelName }}[]
 	}
 
-	async sort(options: SortOptions<Task>) {
+	async sort(options: SortOptions<{{.ModelName}}>) {
     return (await SortedByOrder(
       Object.entries(options).map((item) => {
         if (item[1] !== 'NONE') {
@@ -43,7 +43,6 @@ export default class {{.ModelName}}Service implements IService<{{.ModelName}}> {
           })
         }
       }).filter(item => !!item)
-    )) as Task[];
+    )) as {{.ModelName}}[];
   }
-}
 }
