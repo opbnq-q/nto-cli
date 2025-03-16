@@ -15,8 +15,6 @@ import (
 //go:embed templates/scheme.tmpl
 var SchemeTemplate string
 
-const GolangServicesPath = "../../bindings/app/internal/services"
-
 type Dependency struct {
 	ImportName  string
 	ServiceName string
@@ -25,20 +23,18 @@ type Dependency struct {
 }
 
 type TemplateData struct {
-	StructName         string
-	LowerName          string
-	GolangServicesPath string
-	Fields             []model.Field
-	Dependencies       []Dependency
+	StructName   string
+	LowerName    string
+	Fields       []model.Field
+	Dependencies []Dependency
 }
 
 func GenerateScheme(model *model.Model, mkPath string) {
 	data := TemplateData{
-		StructName:         model.Name,
-		LowerName:          strings.ToLower(model.Name),
-		GolangServicesPath: GolangServicesPath,
-		Fields:             model.Fields,
-		Dependencies:       processDependencies(model.Fields),
+		StructName:   model.Name,
+		LowerName:    strings.ToLower(model.Name),
+		Fields:       model.Fields,
+		Dependencies: processDependencies(model.Fields),
 	}
 
 	schemeFilename := strings.ToUpper(model.Name[:1]) + strings.ToLower(model.Name[1:]) + "Scheme.vue"

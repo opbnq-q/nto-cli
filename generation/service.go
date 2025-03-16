@@ -18,7 +18,6 @@ var ServiceTemplate string
 type ServiceTemplateContext struct {
 	LowerModelName string
 	ModelName      string
-	ServicesPath   string
 }
 
 func GenerateService(model *model.Model, mkPath string) {
@@ -38,7 +37,6 @@ func GenerateService(model *model.Model, mkPath string) {
 	context := ServiceTemplateContext{
 		LowerModelName: strings.ToLower(model.Name),
 		ModelName:      model.Name,
-		ServicesPath:   GolangServicesPath,
 	}
 
 	serviceTemplate, err := template.New("service").Parse(ServiceTemplate)
